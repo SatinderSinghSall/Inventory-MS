@@ -4,6 +4,11 @@ const axiosInstance = axios.create({
   baseURL: "https://inventory-management-system-backend-pt9n.onrender.com/api",
 });
 
+/*
+  https://inventory-management-system-backend-pt9n.onrender.com
+  http://localhost:5000
+*/
+
 //! ✅ Attach token to request headers:
 axiosInstance.interceptors.request.use(
   (config) => {
