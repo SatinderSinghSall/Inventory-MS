@@ -12,7 +12,7 @@ const Dashboard = () => {
       {/* Main content */}
       <div className="flex-1 ml-16 md:ml-64 bg-gray-100 min-h-screen">
         {/* Navbar */}
-        <div className="p-4 border-b border-gray-200 sticky top-0 z-30 bg-gray-100">
+        <div className="hidden md:block p-4 border-b border-gray-200 sticky top-0 z-30 bg-gray-100">
           <Navbar />
         </div>
 
