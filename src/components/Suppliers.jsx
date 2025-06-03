@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../utils/api";
+import { FiPlus } from "react-icons/fi";
 
 const Suppliers = () => {
   const [suppliers, setSuppliers] = useState([]);
@@ -159,9 +160,10 @@ const Suppliers = () => {
         />
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md transition-all"
+          className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          + Add Supplier
+          <FiPlus className="w-5 h-5" />
+          Add Supplier
         </button>
       </div>
 
@@ -211,7 +213,7 @@ const Suppliers = () => {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm flex items-center justify-center">
           <div className="bg-white rounded-xl p-6 w-full max-w-lg shadow-lg">
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">
               {editingId ? "Edit Supplier" : "Add New Supplier"}
@@ -281,7 +283,7 @@ const Suppliers = () => {
 
       {/* Delete Confirmation Modal */}
       {confirmDeleteId && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm flex items-center justify-center">
           <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-lg text-center">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">
               Confirm Deletion
