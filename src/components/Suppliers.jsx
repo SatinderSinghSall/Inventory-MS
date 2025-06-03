@@ -160,7 +160,7 @@ const Suppliers = () => {
         />
         <button
           onClick={() => setIsModalOpen(true)}
-          className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="inline-flex cursor-pointer items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <FiPlus className="w-5 h-5" />
           Add Supplier
@@ -191,13 +191,13 @@ const Suppliers = () => {
                 <td className="px-4 py-3 flex gap-2">
                   <button
                     onClick={() => handleEdit(supplier)}
-                    className="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded-md text-xs"
+                    className="bg-yellow-400 cursor-pointer hover:bg-yellow-500 text-white px-3 py-1 rounded-md text-xs"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => confirmDelete(supplier._id)}
-                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-xs"
+                    className="bg-red-500 cursor-pointer hover:bg-red-600 text-white px-3 py-1 rounded-md text-xs"
                   >
                     Delete
                   </button>
@@ -254,14 +254,14 @@ const Suppliers = () => {
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-md text-gray-800"
+                  className="px-4 py-2 cursor-pointer bg-gray-300 hover:bg-gray-400 rounded-md text-gray-800"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`px-5 py-2 ${
+                  className={`px-5 cursor-pointer py-2 ${
                     editingId
                       ? "bg-green-600 hover:bg-green-700"
                       : "bg-blue-600 hover:bg-blue-700"
@@ -294,14 +294,14 @@ const Suppliers = () => {
             <div className="flex justify-center gap-4">
               <button
                 onClick={() => setConfirmDeleteId(null)}
-                className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-md text-gray-800"
+                className="px-4 cursor-pointer py-2 bg-gray-300 hover:bg-gray-400 rounded-md text-gray-800"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteConfirmed}
                 disabled={isDeleting}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md disabled:opacity-50"
+                className="px-4 cursor-pointer py-2 bg-red-600 hover:bg-red-700 text-white rounded-md disabled:opacity-50"
               >
                 {isDeleting ? "Deleting..." : "Yes, Delete"}
               </button>
