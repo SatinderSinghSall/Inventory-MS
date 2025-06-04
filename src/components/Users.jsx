@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../utils/api";
+import { FaUserPlus, FaTrashAlt } from "react-icons/fa";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -11,7 +13,14 @@ const Users = () => {
     password: "",
     role: "",
   });
+
   const [loading, setLoading] = useState(false);
+  const [addingUser, setAddingUser] = useState(false);
+
+  const [showModal, setShowModal] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+
+  const [deleting, setDeleting] = useState(false);
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -39,7 +48,13 @@ const Users = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Add new category
+    const { name, email, password, address, role } = formData;
+    if (!name || !email || !password || !address || !role) {
+      alert("Please fill out all fields before submitting.");
+      return;
+    }
+
+    setAddingUser(true);
     try {
       const token = localStorage.getItem("ims_token");
       const response = await axiosInstance.post("/users/add", formData, {
@@ -47,179 +62,231 @@ const Users = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+
       if (response.data.success) {
         fetchUsers();
+        setFormData({
+          name: "",
+          address: "",
+          email: "",
+          password: "",
+          role: "",
+        });
       }
     } catch (error) {
-      alert(error.message);
+      alert(error.response?.data?.message || error.message);
+    } finally {
+      setAddingUser(false);
     }
   };
 
   const handleSearchInput = (e) => {
+    const value = e.target.value.toLowerCase();
     setFilteredUsers(
-      users.filter((user) =>
-        user.name.toLowerCase().includes(e.target.value.toLowerCase())
-      )
+      users.filter((user) => user.name.toLowerCase().includes(value))
     );
   };
 
-  const handleDelete = async (id) => {
+  const handleDeleteClick = (user) => {
+    setUserToDelete(user);
+    setShowModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!userToDelete) return;
+    setDeleting(true);
     try {
-      const response = await axiosInstance.delete(`/users/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("ims_token")}`,
-        },
-      });
+      const response = await axiosInstance.delete(
+        `/users/${userToDelete._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("ims_token")}`,
+          },
+        }
+      );
       if (response.data.success) {
-        setUsers((prev) => prev.filter((user) => user._id !== id));
-        setFilteredUsers((prev) => prev.filter((user) => user._id !== id));
+        setUsers((prev) => prev.filter((u) => u._id !== userToDelete._id));
+        setFilteredUsers((prev) =>
+          prev.filter((u) => u._id !== userToDelete._id)
+        );
+        setShowModal(false);
+        setUserToDelete(null);
       }
     } catch (error) {
       alert(error.message);
+    } finally {
+      setDeleting(false);
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Users Management</h1>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <h1 className="text-3xl font-bold text-gray-800 mb-8">User Management</h1>
 
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* Left Column - Add/Edit Form */}
-        <div className="lg:w-1/3">
-          <div className="bg-white p-4 rounded-lg shadow">
-            <h2 className="text-lg font-semibold mb-4">Add New User</h2>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      ) : (
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Add User Form */}
+          <div className="bg-white p-6 rounded-2xl shadow-md col-span-1">
+            <h2 className="text-xl font-semibold mb-4 text-gray-700 flex items-center gap-2">
+              <FaUserPlus className="text-blue-600" />
+              Add New User
+            </h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {["name", "email", "password", "address"].map((field) => (
+                <div key={field}>
+                  <label className="block text-sm font-medium text-gray-700 mb-1 capitalize">
+                    {field}
+                  </label>
+                  <input
+                    type={field === "password" ? "password" : "text"}
+                    name={field}
+                    value={formData[field]}
+                    onChange={(e) =>
+                      setFormData({ ...formData, [field]: e.target.value })
+                    }
+                    placeholder={`Enter ${field}`}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              ))}
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Uer Name
+                  Role
                 </label>
-                <input
-                  type="text"
-                  name="name"
+                <select
+                  name="role"
+                  value={formData.role}
                   onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
+                    setFormData({ ...formData, role: e.target.value })
                   }
-                  placeholder="Enter Name"
-                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  User Email
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  placeholder="Enter Email"
-                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
-                  placeholder="*******"
-                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  User Address
-                </label>
-                <input
-                  type="text"
-                  name="address"
-                  onChange={(e) =>
-                    setFormData({ ...formData, address: e.target.value })
-                  }
-                  placeholder="Enter Address"
-                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <select
-                name="role"
-                id=""
-                onChange={(e) =>
-                  setFormData({ ...formData, role: e.target.value })
-                }
-                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Select Role</option>
-                <option value="Admin">Admin</option>
-                <option value="Customer">Customer</option>
-              </select>
-              <div className="flex gap-2">
-                <button
-                  type="submit"
-                  className={`flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md`}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  Add User
-                </button>
+                  <option value="">Select Role</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Customer">Customer</option>
+                </select>
               </div>
+
+              <button
+                type="submit"
+                disabled={addingUser}
+                className={`w-full flex justify-center items-center gap-2 bg-blue-600 text-white py-2 rounded-md transition ${
+                  addingUser
+                    ? "opacity-70 cursor-not-allowed"
+                    : "hover:bg-blue-700"
+                }`}
+              >
+                {addingUser ? (
+                  <AiOutlineLoading3Quarters className="animate-spin" />
+                ) : (
+                  <FaUserPlus />
+                )}
+                {addingUser ? "Adding..." : "Add User"}
+              </button>
             </form>
           </div>
-        </div>
 
-        {/* Right Column - Table and Search */}
-        <div className="lg:w-2/3">
-          <div className="mb-4">
+          {/* User List */}
+          <div className="lg:col-span-2">
             <input
               type="text"
               onChange={handleSearchInput}
-              placeholder="Search users..."
-              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Search users by name..."
+              className="w-full mb-4 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-          </div>
-
-          <div className="overflow-x-auto bg-white rounded-lg shadow">
-            <table className="min-w-full">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="p-2 text-left">ID</th>
-                  <th className="p-2 text-left">Name</th>
-                  <th className="p-2 text-left">Email</th>
-                  <th className="p-2 text-left">Role</th>
-                  <th className="p-2 text-left">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredUsers.map((user, index) => (
-                  <tr key={index} className="border-t">
-                    <td className="p-2">{index + 1}</td>
-                    <td className="p-2">{user.name}</td>
-                    <td className="p-2">{user.email}</td>
-                    <td className="p-2">{user.role}</td>
-                    <td className="p-2 flex gap-2">
-                      <button
-                        onClick={() => handleDelete(user._id)}
-                        className="text-red-500 font-bold"
-                      >
-                        Delete
-                      </button>
-                    </td>
+            <div className="bg-white shadow rounded-2xl overflow-x-auto">
+              <table className="w-full text-sm text-left text-gray-700">
+                <thead className="bg-gray-100 text-xs uppercase tracking-wider text-gray-600">
+                  <tr>
+                    <th className="px-4 py-3">#</th>
+                    <th className="px-4 py-3">Name</th>
+                    <th className="px-4 py-3">Email</th>
+                    <th className="px-4 py-3">Role</th>
+                    <th className="px-4 py-3">Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-            {filteredUsers.length === 0 && (
-              <p className="text-center p-4 text-gray-500">No User found</p>
-            )}
+                </thead>
+                <tbody>
+                  {filteredUsers.map((user, index) => (
+                    <tr
+                      key={user._id}
+                      className="border-t hover:bg-gray-50 transition duration-150"
+                    >
+                      <td className="px-4 py-3">{index + 1}</td>
+                      <td className="px-4 py-3">{user.name}</td>
+                      <td className="px-4 py-3">{user.email}</td>
+                      <td className="px-4 py-3">{user.role}</td>
+                      <td className="px-4 py-3">
+                        <button
+                          onClick={() => handleDeleteClick(user)}
+                          className="text-red-600 hover:text-red-800 flex items-center gap-1"
+                        >
+                          <FaTrashAlt />
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              {filteredUsers.length === 0 && (
+                <div className="p-6 text-center text-gray-500">
+                  No users found.
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              Confirm Delete
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete{" "}
+              <span className="font-bold text-red-600">
+                {userToDelete?.name}
+              </span>
+              ? This action cannot be undone.
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-100 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                disabled={deleting}
+                className={`px-4 py-2 rounded-md flex items-center justify-center gap-2 text-white transition ${
+                  deleting
+                    ? "bg-red-500 cursor-not-allowed opacity-80"
+                    : "bg-red-600 hover:bg-red-700"
+                }`}
+              >
+                {deleting ? (
+                  <>
+                    <AiOutlineLoading3Quarters className="animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  "Confirm"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
