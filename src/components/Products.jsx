@@ -18,6 +18,7 @@ const Products = () => {
     supplier: "",
   });
   const [editingId, setEditingId] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -60,6 +61,8 @@ const Products = () => {
     e.preventDefault();
     if (!formData.name.trim()) return;
 
+    setIsSubmitting(true);
+
     if (editingId) {
       // Edit existing products
       try {
@@ -93,6 +96,8 @@ const Products = () => {
       } catch (error) {
         console.log(error);
         alert(error.message);
+      } finally {
+        setIsSubmitting(false);
       }
     }
 
@@ -361,8 +366,15 @@ const Products = () => {
                 <button
                   type="submit"
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  disabled={isSubmitting}
                 >
-                  {editingId ? "Update" : "Add"}
+                  {isSubmitting
+                    ? editingId
+                      ? "Saving..."
+                      : "Adding..."
+                    : editingId
+                    ? "Save Changes"
+                    : "Add Product"}
                 </button>
               </div>
             </form>
