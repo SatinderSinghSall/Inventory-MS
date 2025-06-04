@@ -9,6 +9,7 @@ import ProtectedRoute from "./utils/ProtectedRoute";
 import Unauthorized from "./components/Unauthorized";
 import Categories from "./components/Categories";
 import Suppliers from "./components/Suppliers";
+import Products from "./components/Products";
 import Logout from "./components/Logout";
 
 //! Pages:
@@ -37,7 +38,7 @@ function App() {
           >
             <Route index element={<h1>Summary of Dashboard.</h1>} />
             <Route path="categories" element={<Categories />} />
-            <Route path="products" element={<h1>Products</h1>} />
+            <Route path="products" element={<Products />} />
             <Route path="orders" element={<h1>Orders</h1>} />
             <Route path="supplier" element={<Suppliers />} />
             <Route path="users" element={<h1>Users</h1>} />
