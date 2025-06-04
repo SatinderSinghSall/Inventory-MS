@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axiosInstance from "../utils/api";
 import { FaUserPlus, FaTrashAlt } from "react-icons/fa";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { toast } from "react-hot-toast";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -50,7 +51,7 @@ const Users = () => {
 
     const { name, email, password, address, role } = formData;
     if (!name || !email || !password || !address || !role) {
-      alert("Please fill out all fields before submitting.");
+      toast.error("Please fill out all fields before submitting.");
       return;
     }
 
@@ -64,6 +65,7 @@ const Users = () => {
       });
 
       if (response.data.success) {
+        toast.success("User added successfully!");
         fetchUsers();
         setFormData({
           name: "",
@@ -74,7 +76,7 @@ const Users = () => {
         });
       }
     } catch (error) {
-      alert(error.response?.data?.message || error.message);
+      toast.error(error.response?.data?.message || error.message);
     } finally {
       setAddingUser(false);
     }
@@ -113,7 +115,7 @@ const Users = () => {
         setUserToDelete(null);
       }
     } catch (error) {
-      alert(error.message);
+      toast.error(error.message);
     } finally {
       setDeleting(false);
     }
@@ -223,7 +225,7 @@ const Users = () => {
                       <td className="px-4 py-3">
                         <button
                           onClick={() => handleDeleteClick(user)}
-                          className="text-red-600 hover:text-red-800 flex items-center gap-1"
+                          className="text-red-600 cursor-pointer hover:text-red-800 flex items-center gap-1"
                         >
                           <FaTrashAlt />
                           Delete
@@ -261,7 +263,7 @@ const Users = () => {
             <div className="flex justify-end gap-4">
               <button
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-100 transition"
+                className="px-4 py-2 cursor-pointer rounded-md border border-gray-300 hover:bg-gray-100 transition"
               >
                 Cancel
               </button>
