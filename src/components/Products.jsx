@@ -174,7 +174,7 @@ const Products = () => {
         />
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-blue-600 text-white px-5 py-3 rounded-xl font-medium hover:bg-blue-700 transition duration-200 shadow-md flex items-center gap-2"
+          className="bg-blue-600 cursor-pointer text-white px-5 py-3 rounded-xl font-medium hover:bg-blue-700 transition duration-200 shadow-md flex items-center gap-2"
         >
           <Plus size={18} />
           Add Product
@@ -212,7 +212,7 @@ const Products = () => {
                     {product.supplier.name}
                   </td>
                   <td className="px-5 py-3 text-gray-600">
-                    ${product.price.toFixed(2)}
+                    ₹{product.price.toFixed(2)}
                   </td>
                   <td className="px-5 py-3">
                     <span
@@ -230,13 +230,13 @@ const Products = () => {
                   <td className="px-5 py-3 flex gap-3">
                     <button
                       onClick={() => handleEdit(product)}
-                      className="text-blue-600 hover:text-blue-800 font-medium"
+                      className="text-blue-600 cursor-pointer hover:text-blue-800 font-medium"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(product._id)}
-                      className="text-red-500 hover:text-red-700 font-medium"
+                      className="text-red-500 cursor-pointer hover:text-red-700 font-medium"
                     >
                       Delete
                     </button>
@@ -359,13 +359,13 @@ const Products = () => {
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-4 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200"
+                  className="px-4 py-2 cursor-pointer bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="px-4 py-2 cursor-pointer bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                   disabled={isSubmitting}
                 >
                   {isSubmitting
