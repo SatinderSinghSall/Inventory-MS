@@ -64,7 +64,7 @@ const Summary = () => {
 
         <div className="bg-purple-500 text-white p-4 rounded-lg shadow-md flex flex-col items-center justify-center">
           <h2 className="text-lg font-semibold">Revenue</h2>
-          <p className="text-2xl font-bold">${dashboardData.revenue}</p>
+          <p className="text-2xl font-bold">₹{dashboardData.revenue}</p>
         </div>
       </div>
 
