@@ -12,6 +12,7 @@ import Categories from "./components/Categories";
 import Suppliers from "./components/Suppliers";
 import Products from "./components/Products";
 import Users from "./components/Users";
+import Summary from "./components/Summary";
 import EmployeeProducts from "./components/EmployeeProducts";
 import Orders from "./components/Orders";
 import Profile from "./components/Profile";
@@ -43,7 +44,14 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route index element={<h1>Summary of Dashboard.</h1>} />
+            <Route
+              index
+              element={
+                <ProtectedRoute requiredRole={["Admin"]}>
+                  <Summary />
+                </ProtectedRoute>
+              }
+            ></Route>
             <Route path="categories" element={<Categories />} />
             <Route path="products" element={<Products />} />
             <Route path="supplier" element={<Suppliers />} />
