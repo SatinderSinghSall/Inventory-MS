@@ -19,11 +19,12 @@ const Profile = () => {
     const fetchUserData = async () => {
       setLoading(true);
       try {
-        const response = await axiosInstance.get(`/users/${user.userId}`, {
+        const response = await axiosInstance.get(`/users/${user._id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("ims_token")}`,
           },
         });
+
         if (response.data.success) {
           const userInfo = {
             name: response.data.user.name,
@@ -42,7 +43,9 @@ const Profile = () => {
       }
     };
 
-    if (user && user.userId) {
+    // console.log("User from context:", user);
+
+    if (user && user._id) {
       fetchUserData();
     }
   }, [user]);
@@ -66,7 +69,7 @@ const Profile = () => {
 
     try {
       const response = await axiosInstance.put(
-        `/users/${user.userId}`,
+        `/users/${user._id}`,
         updateData,
         {
           headers: {
