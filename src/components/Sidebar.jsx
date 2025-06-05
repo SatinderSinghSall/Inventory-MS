@@ -41,19 +41,19 @@ const Sidebar = () => {
   const userMenuItems = [
     {
       name: "Products",
-      path: "employee/employee-dashboard",
+      path: ".",
       icon: <FaBox />,
       isParent: true,
     },
     {
       name: "Orders",
-      path: "/orders",
+      path: "orders",
       icon: <FaShoppingCart />,
       isParent: false,
     },
     {
       name: "Profile",
-      path: "/user-profile",
+      path: "user-profile",
       icon: <FaCog />,
       isParent: false,
     },
