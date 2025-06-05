@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../utils/api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { BarChart4, Package, ShoppingBag, TrendingUp } from "lucide-react";
 
 const Summary = () => {
   const [dashboardData, setDashboardData] = useState({
@@ -27,7 +28,7 @@ const Summary = () => {
         });
         setDashboardData(response.data);
       } catch (err) {
-        if (!err.response.data.success) {
+        if (!err.response?.data?.success) {
           navigate("/login");
         }
         toast.error(err.message);
@@ -38,66 +39,88 @@ const Summary = () => {
     fetchDashboardData();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
+      </div>
+    );
 
   return (
     <div className="p-6">
-      {/* Header */}
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Dashboard</h1>
+      <h1 className="text-3xl font-bold text-gray-800 mb-8">Dashboard</h1>
 
-      {/* Top Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div className="bg-blue-500 text-white p-4 rounded-lg shadow-md flex flex-col items-center justify-center">
-          <h2 className="text-lg font-semibold">Total Products</h2>
-          <p className="text-2xl font-bold">{dashboardData.totalProducts}</p>
-        </div>
-
-        <div className="bg-green-500 text-white p-4 rounded-lg shadow-md flex flex-col items-center justify-center">
-          <h2 className="text-lg font-semibold">Total Stock</h2>
-          <p className="text-2xl font-bold">{dashboardData.totalStock}</p>
-        </div>
-
-        <div className="bg-yellow-500 text-white p-4 rounded-lg shadow-md flex flex-col items-center justify-center">
-          <h2 className="text-lg font-semibold">Order Today</h2>
-          <p className="text-2xl font-bold">{dashboardData.ordersToday}</p>
-        </div>
-
-        <div className="bg-purple-500 text-white p-4 rounded-lg shadow-md flex flex-col items-center justify-center">
-          <h2 className="text-lg font-semibold">Revenue</h2>
-          <p className="text-2xl font-bold">₹{dashboardData.revenue}</p>
-        </div>
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {[
+          {
+            title: "Total Products",
+            value: dashboardData.totalProducts,
+            color: "bg-blue-100 text-blue-700",
+            Icon: Package,
+          },
+          {
+            title: "Total Stock",
+            value: dashboardData.totalStock,
+            color: "bg-green-100 text-green-700",
+            Icon: BarChart4,
+          },
+          {
+            title: "Orders Today",
+            value: dashboardData.ordersToday,
+            color: "bg-yellow-100 text-yellow-700",
+            Icon: ShoppingBag,
+          },
+          {
+            title: "Revenue",
+            value: `₹${dashboardData.revenue}`,
+            color: "bg-purple-100 text-purple-700",
+            Icon: TrendingUp,
+          },
+        ].map(({ title, value, color, Icon }, index) => (
+          <div
+            key={index}
+            className={`rounded-xl shadow-sm p-5 flex items-center gap-4 ${color}`}
+          >
+            <Icon size={32} />
+            <div>
+              <h2 className="text-md font-medium">{title}</h2>
+              <p className="text-xl font-bold">{value}</p>
+            </div>
+          </div>
+        ))}
       </div>
 
-      {/* Bottom Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Out of Stock Products */}
-        <div className="bg-white p-4 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold text-gray-800 mb-3">
+      {/* Detailed Sections */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Out of Stock */}
+        <div className="bg-white rounded-xl p-5 shadow">
+          <h3 className="text-lg font-semibold text-gray-800 mb-3">
             Out of Stock Products
           </h3>
           {dashboardData.outOfStock.length > 0 ? (
             <ul className="space-y-2">
               {dashboardData.outOfStock.map((product, index) => (
-                <li key={index} className="text-gray-600">
+                <li key={index} className="text-gray-600 text-sm">
                   {product.name}{" "}
-                  <span className="text-gray-400">
+                  <span className="text-gray-400 text-xs">
                     ({product.category.name})
                   </span>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-gray-500">No products out of stock.</p>
+            <p className="text-gray-500 text-sm">No products out of stock.</p>
           )}
         </div>
 
         {/* Highest Sale Product */}
-        <div className="bg-white p-4 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold text-gray-800 mb-3">
+        <div className="bg-white rounded-xl p-5 shadow">
+          <h3 className="text-lg font-semibold text-gray-800 mb-3">
             Highest Sale Product
           </h3>
           {dashboardData.highestSaleProduct?.name ? (
-            <div className="text-gray-600">
+            <div className="text-gray-700 text-sm space-y-1">
               <p>
                 <strong>Name:</strong> {dashboardData.highestSaleProduct.name}
               </p>
@@ -111,30 +134,30 @@ const Summary = () => {
               </p>
             </div>
           ) : (
-            <p className="text-gray-500">
+            <p className="text-gray-500 text-sm">
               {dashboardData.highestSaleProduct?.message || "Loading..."}
             </p>
           )}
         </div>
 
-        {/* Low Stock Products */}
-        <div className="bg-white p-4 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold text-gray-800 mb-3">
+        {/* Low Stock */}
+        <div className="bg-white rounded-xl p-5 shadow">
+          <h3 className="text-lg font-semibold text-gray-800 mb-3">
             Low Stock Products
           </h3>
           {dashboardData.lowStock.length > 0 ? (
             <ul className="space-y-2">
               {dashboardData.lowStock.map((product, index) => (
-                <li key={index} className="text-gray-600">
+                <li key={index} className="text-gray-600 text-sm">
                   <strong>{product.name}</strong> - {product.stock} left{" "}
-                  <span className="text-gray-400">
+                  <span className="text-gray-400 text-xs">
                     ({product.category.name})
                   </span>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-gray-500">No low stock products.</p>
+            <p className="text-gray-500 text-sm">No low stock products.</p>
           )}
         </div>
       </div>
