@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../utils/api";
+import toast from "react-hot-toast";
 
 const EmployeeProducts = () => {
   const [categories, setCategories] = useState([]);
@@ -30,7 +31,7 @@ const EmployeeProducts = () => {
         setFilteredProducts(response.data.products);
       }
     } catch (error) {
-      alert("Error fetching products");
+      toast.error("Error fetching products.");
     } finally {
       setLoading(false);
     }
@@ -93,7 +94,7 @@ const EmployeeProducts = () => {
         alert("Order placed!");
       }
     } catch (err) {
-      alert("Error placing order");
+      toast.error("Error placing order.");
     } finally {
       setLoading(false);
     }
