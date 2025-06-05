@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import axiosInstance from "../utils/api";
+import { Pencil, Save, X } from "lucide-react";
+
+// Spinner Component
+const Spinner = () => (
+  <div className="flex justify-center my-6">
+    <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+  </div>
+);
 
 const Profile = () => {
   const [userData, setUserData] = useState({
@@ -42,8 +50,6 @@ const Profile = () => {
         setLoading(false);
       }
     };
-
-    // console.log("User from context:", user);
 
     if (user && user._id) {
       fetchUserData();
@@ -97,17 +103,20 @@ const Profile = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">User Profile</h1>
+    <div className="container mx-auto max-w-2xl px-6 py-10">
+      <h1 className="text-3xl font-semibold mb-6 text-gray-800">
+        User Profile
+      </h1>
 
       {error && <p className="text-red-500 mb-4">{error}</p>}
-      {loading && <p className="text-gray-500 mb-4">Loading...</p>}
+      {loading && <Spinner />}
 
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-lg shadow max-w-md"
+        className="bg-white p-8 rounded-2xl shadow-md border border-gray-200 space-y-6"
       >
-        <div className="mb-4">
+        {/* Name */}
+        <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Name
           </label>
@@ -117,11 +126,12 @@ const Profile = () => {
             value={userData.name}
             onChange={handleInputChange}
             disabled={!isEditing}
-            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
           />
         </div>
 
-        <div className="mb-4">
+        {/* Email */}
+        <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Email
           </label>
@@ -131,11 +141,12 @@ const Profile = () => {
             value={userData.email}
             onChange={handleInputChange}
             disabled={!isEditing}
-            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
           />
         </div>
 
-        <div className="mb-4">
+        {/* Address */}
+        <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Address
           </label>
@@ -145,12 +156,13 @@ const Profile = () => {
             value={userData.address}
             onChange={handleInputChange}
             disabled={!isEditing}
-            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
           />
         </div>
 
+        {/* Password */}
         {isEditing && (
-          <div className="mb-4">
+          <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Password
             </label>
@@ -159,13 +171,14 @@ const Profile = () => {
               name="password"
               value={userData.password || ""}
               onChange={handleInputChange}
-              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter new password (optional)"
             />
           </div>
         )}
 
-        <div className="flex gap-2">
+        {/* Action Buttons */}
+        <div className="flex gap-3 justify-end">
           {!isEditing ? (
             <button
               type="button"
@@ -173,26 +186,29 @@ const Profile = () => {
                 e.preventDefault();
                 setIsEditing(true);
               }}
-              className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 disabled:bg-yellow-300"
+              className="flex items-center gap-2 bg-yellow-500 text-white px-5 py-2 rounded-lg text-sm hover:bg-yellow-600 transition disabled:bg-yellow-300"
               disabled={loading}
             >
+              <Pencil size={16} />
               Edit Profile
             </button>
           ) : (
             <>
               <button
                 type="submit"
-                className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 disabled:bg-green-300"
+                className="flex items-center gap-2 bg-green-500 text-white px-5 py-2 rounded-lg text-sm hover:bg-green-600 transition disabled:bg-green-300"
                 disabled={loading}
               >
+                <Save size={16} />
                 Save Changes
               </button>
               <button
                 type="button"
                 onClick={() => setIsEditing(false)}
-                className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 disabled:bg-gray-300"
+                className="flex items-center gap-2 bg-gray-500 text-white px-5 py-2 rounded-lg text-sm hover:bg-gray-600 transition disabled:bg-gray-300"
                 disabled={loading}
               >
+                <X size={16} />
                 Cancel
               </button>
             </>
