@@ -70,7 +70,8 @@ const EmployeeProducts = () => {
 
   const handleQuantityChange = (e) => {
     const quantity = parseInt(e.target.value) || 1;
-    if (quantity > orderData.stock) return alert("Exceeds available stock");
+    if (quantity > orderData.stock)
+      return toast.error("Exceeds available stock");
     setOrderData((prev) => ({
       ...prev,
       quantity,
@@ -91,7 +92,7 @@ const EmployeeProducts = () => {
         setIsModalOpen(false);
         setOrderData({ productId: "", quantity: 1, total: 0 });
         fetchProducts();
-        alert("Order placed!");
+        toast.success("Order placed!");
       }
     } catch (err) {
       toast.error("Error placing order.");
