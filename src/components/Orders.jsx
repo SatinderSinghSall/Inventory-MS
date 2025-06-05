@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../utils/api";
 import { useAuth } from "../context/AuthContext";
+import toast from "react-hot-toast";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -21,7 +22,7 @@ const Orders = () => {
         }
       } catch (err) {
         console.error(err);
-        alert("Failed to fetch orders.");
+        toast.error("Failed to fetch orders.");
       } finally {
         setLoading(false);
       }
