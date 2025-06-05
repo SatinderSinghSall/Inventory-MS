@@ -7,6 +7,9 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [orderToDelete, setOrderToDelete] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -35,7 +38,6 @@ const Orders = () => {
       <h1 className="text-4xl font-bold text-gray-900 mb-8 tracking-tight">
         {user.role === "admin" ? "All Orders" : "My Orders"}
       </h1>
-
       <div className="bg-white shadow-lg rounded-2xl overflow-hidden">
         {loading ? (
           <div className="p-8 text-center text-gray-400 animate-pulse">
@@ -58,13 +60,14 @@ const Orders = () => {
                   <th className="px-6 py-4 text-left">Quantity</th>
                   <th className="px-6 py-4 text-left">Total Price</th>
                   <th className="px-6 py-4 text-left">Date</th>
+                  <th className="px-6 py-4 text-left">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {orders.map((order, index) => (
                   <tr key={order._id} className="hover:bg-gray-50 transition">
                     <td className="px-6 py-4">{index + 1}</td>
-                    {user.role === "Admin" && (
+                    {user.role === "admin" && (
                       <>
                         <td className="px-6 py-4">{order.user.name}</td>
                         <td className="px-6 py-4">{order.user.address}</td>
@@ -83,6 +86,17 @@ const Orders = () => {
                     <td className="px-6 py-4 text-sm text-gray-500">
                       {new Date(order.orderDate).toLocaleDateString()}
                     </td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => {
+                          setOrderToDelete(order._id);
+                          setShowConfirm(true);
+                        }}
+                        className="text-red-600 hover:text-red-800 font-medium text-sm"
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -92,6 +106,87 @@ const Orders = () => {
           <div className="p-8 text-center text-gray-400">No orders found.</div>
         )}
       </div>
+      {/* Confirmation Modal */}
+      {showConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+          <div className="bg-white/90 backdrop-blur-md rounded-lg shadow-xl p-6 max-w-sm w-full">
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+              Confirm Deletion
+            </h2>
+            <p className="text-sm text-gray-600 mb-6">
+              Are you sure you want to delete this order? This action cannot be
+              undone.
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300"
+                disabled={deleteLoading}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  setDeleteLoading(true);
+                  try {
+                    await axiosInstance.delete(`/order/${orderToDelete}`, {
+                      headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                          "ims_token"
+                        )}`,
+                      },
+                    });
+                    setOrders((prev) =>
+                      prev.filter((order) => order._id !== orderToDelete)
+                    );
+                    toast.success("Order deleted successfully.");
+                  } catch (err) {
+                    console.error(err);
+                    toast.error("Failed to delete order.");
+                  } finally {
+                    setDeleteLoading(false);
+                    setShowConfirm(false);
+                    setOrderToDelete(null);
+                  }
+                }}
+                className={`px-4 py-2 rounded text-white ${
+                  deleteLoading
+                    ? "bg-red-400 cursor-not-allowed"
+                    : "bg-red-600 hover:bg-red-700"
+                }`}
+              >
+                {deleteLoading ? (
+                  <span className="flex items-center gap-2">
+                    <svg
+                      className="animate-spin h-4 w-4 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                      ></path>
+                    </svg>
+                    Deleting...
+                  </span>
+                ) : (
+                  "Delete"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
