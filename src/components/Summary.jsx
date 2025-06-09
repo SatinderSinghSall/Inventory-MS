@@ -9,6 +9,7 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
+import { CiDeliveryTruck } from "react-icons/ci";
 
 const Summary = () => {
   const [dashboardData, setDashboardData] = useState({
@@ -16,6 +17,7 @@ const Summary = () => {
     totalStock: 0,
     ordersToday: 0,
     revenue: 0,
+    totalSuppliers: 0,
     totalUsers: 0,
     outOfStock: [],
     highestSaleProduct: null,
@@ -83,6 +85,12 @@ const Summary = () => {
             value: `₹${dashboardData.revenue}`,
             color: "bg-purple-100 text-purple-700",
             Icon: TrendingUp,
+          },
+          {
+            title: "Total Suppliers",
+            value: dashboardData.totalSuppliers,
+            color: "bg-pink-100 text-pink-700",
+            Icon: CiDeliveryTruck,
           },
           {
             title: "Total Users",
