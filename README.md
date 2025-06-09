@@ -26,6 +26,10 @@ Whether you're managing a small shop or scaling up operations, Inventory MS simp
 #MERN #WebDevelopment #InventoryManagement #FullStackDeveloper #ReactJS #MongoDB #NodeJS #ExpressJS #DevProject #OpenSource #SatinderSinghSall
 
 
+Improved the UI of the dashboard summary.
+![Screenshot (604)](https://github.com/user-attachments/assets/67872f86-edc4-485b-8c66-2a4c9d322d60)
+
+
 📸 See the intuitive and responsive admin dashboard.
 
 ![Screenshot (571)](https://github.com/user-attachments/assets/bad98dea-7293-4b68-8bec-3d4c76ee25cc)
