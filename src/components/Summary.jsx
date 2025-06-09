@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../utils/api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { BarChart4, Package, ShoppingBag, TrendingUp } from "lucide-react";
+import {
+  BarChart4,
+  Package,
+  ShoppingBag,
+  TrendingUp,
+  Users,
+} from "lucide-react";
 
 const Summary = () => {
   const [dashboardData, setDashboardData] = useState({
@@ -10,6 +16,7 @@ const Summary = () => {
     totalStock: 0,
     ordersToday: 0,
     revenue: 0,
+    totalUsers: 0,
     outOfStock: [],
     highestSaleProduct: null,
     lowStock: [],
@@ -76,6 +83,12 @@ const Summary = () => {
             value: `₹${dashboardData.revenue}`,
             color: "bg-purple-100 text-purple-700",
             Icon: TrendingUp,
+          },
+          {
+            title: "Total Users",
+            value: dashboardData.totalUsers,
+            color: "bg-orange-100 text-orange-700",
+            Icon: Users,
           },
         ].map(({ title, value, color, Icon }, index) => (
           <div
