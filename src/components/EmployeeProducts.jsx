@@ -158,7 +158,7 @@ const EmployeeProducts = () => {
                     className={`px-4 py-1 rounded-lg text-white transition ${
                       product.stock === 0
                         ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-blue-600 hover:bg-blue-700"
+                        : "cursor-pointer bg-blue-600 hover:bg-blue-700"
                     }`}
                   >
                     Order
