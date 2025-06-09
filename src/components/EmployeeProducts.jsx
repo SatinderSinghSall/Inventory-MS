@@ -203,7 +203,7 @@ const EmployeeProducts = () => {
                 <p className="text-sm text-gray-800">
                   Total:{" "}
                   <span className="font-semibold text-green-700">
-                    ${orderData.total}
+                    ₹{orderData.total}
                   </span>
                 </p>
               </div>
