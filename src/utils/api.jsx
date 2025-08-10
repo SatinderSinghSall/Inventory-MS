@@ -1,15 +1,9 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "https://inventory-management-system-backend-pt9n.onrender.com/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
-/*
-  https://inventory-management-system-backend-pt9n.onrender.com
-  http://localhost:5000
-*/
-
-//! ✅ Attach token to request headers:
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("ims_token");
@@ -21,7 +15,6 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-//! ⚠️ Handle 401 responses:
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
